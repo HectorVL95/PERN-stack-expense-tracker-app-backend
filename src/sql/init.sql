@@ -1,22 +1,23 @@
 CREATE TABLE users (
   id SERIAL PRIMARY KEY,
   name TEXT NOT NULL,
-  nmail TEXT UNIQUE NOT NULL,
+  email TEXT UNIQUE NOT NULL,
   password TEXT,
   budget NUMERIC,
-  date_budget DATE
 );
 
 CREATE TABLE data_ranges (
   id SERIAL PRIMARY KEY,
+  user_id INTEGER REFERENCES users(id) ON DELETE CASCADE
   from_date DATE NOT NULL,
   to_date DATE NOT NULL,
   budget NUMERIC,
   total_expenses NUMERIC
 );
 
-CREATE TABLE Expenses (
+CREATE TABLE expenses (
   id SERIAL PRIMARY KEY,
+  data_range_id INTEGER REFERENCES data_rang(id) ON DELETE CASCADE,
   name TEXT,
   amount NUMERIC,
   location TEXT,
