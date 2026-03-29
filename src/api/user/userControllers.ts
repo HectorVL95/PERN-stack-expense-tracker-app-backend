@@ -75,14 +75,14 @@ export const getLoggedUser = asyncHandler(async(req, res, next) => {
 })
 
 export const deleteUser = asyncHandler(async(req, res, next) => {
-  const { userId } = (req as authenticatedRequest).body
+  const { userId } = (req as authenticatedRequest).user!
 
   const deleteUser = await pool.query(
     deleteUserQuery,
     [userId]
   )
 
-  if (!deleteUser.rows[0]) return next(new errorResponse('User does not exist', 400))
+  if (!deleteUser.rows[0]) return next(new errorResponse('User does not exist', 404))
 
     res.status(200).json({
       success: true,

@@ -21,7 +21,7 @@ export const findUserByIdQuery =
 
 export const deleteUserQuery =
   `
-    DROP * from users
+    DELETE FROM users
     WHERE id = $1
   `
 export const modifiUsersQuery = 
