@@ -8,7 +8,10 @@ const app = express()
 
 testDB()
 
-app.use(`/api/user/`, userRoutes)
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
+
+app.use(`/api`, userRoutes)
 
 app.listen(process.env.PORT, () => {
   console.log(`listening to port ${process.env.PORT}`)

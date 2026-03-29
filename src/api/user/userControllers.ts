@@ -1,19 +1,19 @@
 import { asyncHandler } from '../../utils/asyncHandler';
 import { errorResponse } from '../../utils/errorResponse';
 import pool from '../../config/db';
-import { hash } from 'bcrypt'
-import { createUserQuery, deleteUserQuery, findUserQuery } from './userQuieres';
+import { hash, compare } from 'bcrypt'
+import { createUserQuery, deleteUserQuery, loginUserQuery, findUserByIdQuery, modifiUsersQuery } from './userQuieres';
 import jwt from 'jsonwebtoken'
 import { authenticatedRequest } from '../../utils/specialRequests';
+import { aunthenticatedUser } from '../../utils/specialRequests';
 
 export const createUser  = asyncHandler(async(req, res) => {
-  const { name, password, email, password, budget } = req.body
-
+  const { name, email, password, budget } = req.body
   const hashedPassword = await hash(password, 10)
 
   const newUser = await pool.query(
     createUserQuery,
-    [name, email, hashedPassword, budget, budget]
+    [name, email, hashedPassword, budget]
   )
 
   res.status(201).json({
@@ -26,21 +26,51 @@ export const createUser  = asyncHandler(async(req, res) => {
 export const loginUser = asyncHandler(async(req, res, next) => {
   const { email, password } = req.body
 
-  const user = await pool.query(
-    findUserQuery,
-    [email, password]
+  const result = await pool.query(
+    loginUserQuery,
+    [email]
   )
+
+  const user = result.rows[0]
 
   if (!user) return next(new errorResponse('User not found', 401))
 
-  const token = jwt.sign({ userId: user.oid , email: email}, process.env.JWT_SECRET!, {expiresIn: '999999h', algorithm: 'HS256'})
+  const isMatch  = await compare(password, user.password) 
+
+  if (!isMatch) {
+    return next((new errorResponse('Invalid credentials', 403)))
+  }
+
+  const token = jwt.sign({ userId: user.id , email: email}, process.env.JWT_SECRET!, {expiresIn: '999999h', algorithm: 'HS256'})
 
   console.log('succesfuly logged')
 
   res.status(200).json({
     success: true,
     message: 'Succesfully signed in',
-    data: token
+    token
+  })
+})
+
+export const getLoggedUser = asyncHandler(async(req, res, next) => {
+  const { userId } = (req as authenticatedRequest).user!
+
+  const user = await pool.query(
+    findUserByIdQuery,
+    [userId]
+  )
+
+  const foundUser = user.rows[0]
+
+  if (!foundUser) {
+    return next(new errorResponse('Unable to find user', 404))
+  }
+
+  res.status(200).json({
+    success: true,
+    message: `Successfully found user ${foundUser.name}`,
+    data: foundUser
+    
   })
 })
 
@@ -49,14 +79,31 @@ export const deleteUser = asyncHandler(async(req, res, next) => {
 
   const deleteUser = await pool.query(
     deleteUserQuery,
-    userId
+    [userId]
   )
 
-  if (!deleteUser) return next(new errorResponse('User does not exist', 400))
+  if (!deleteUser.rows[0]) return next(new errorResponse('User does not exist', 400))
 
     res.status(200).json({
-      success: true
+      success: true,
       message: 'Sucessfully delete user',
-      data: deleteUser
+      data: deleteUser.rows[0]
     })
+})
+
+export const modifyUser = asyncHandler(async(req, res, next) => {
+  const { userId } = (req  as authenticatedRequest).body
+  const { name  } = req.body
+
+  const result = await pool.query(modifiUsersQuery, [name, userId])
+
+  if (result.rowCount === 0) return next(new errorResponse('Error while modifying', 404))
+  
+  const editedUser = await result.rows[0]
+
+  res.status(200).json({
+    success: true,
+    messsage: `Successfully edited user ${editedUser.name}`,
+    data: editedUser
+  })
 })

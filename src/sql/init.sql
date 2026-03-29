@@ -3,7 +3,7 @@ CREATE TABLE users (
   name TEXT NOT NULL,
   email TEXT UNIQUE NOT NULL,
   password TEXT,
-  budget NUMERIC,
+  budget NUMERIC
 );
 
 CREATE TABLE data_ranges (

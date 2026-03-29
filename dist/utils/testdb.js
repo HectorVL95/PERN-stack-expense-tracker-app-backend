@@ -1,11 +1,16 @@
-import pool from "../config/db";
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const db_1 = __importDefault(require("../config/db"));
 const testDB = async () => {
     try {
-        const res = await pool.query('SELECT NOW()');
+        const res = await db_1.default.query('SELECT NOW()');
         console.log('DB Connected:', res.rows);
     }
     catch (err) {
         console.error('DB Error:', err);
     }
 };
-export default testDB;
+exports.default = testDB;
