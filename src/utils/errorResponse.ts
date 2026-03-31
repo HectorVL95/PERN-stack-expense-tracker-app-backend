@@ -1,9 +1,9 @@
 export class errorResponse extends Error {
-  status_code: number
+  statusCode: number
 
-  constructor(message: string, status_code: number) {
+  constructor(message: string, statusCode: number) {
     super(message)
-    this.status_code = status_code
+    this.statusCode = statusCode
 
     Error.captureStackTrace(this, this.constructor)
   }

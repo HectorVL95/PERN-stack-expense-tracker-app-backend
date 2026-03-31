@@ -18,11 +18,18 @@ export const findUserByIdQuery =
     SELECT id, name FROM users 
     WHERE id = $1
   `
+export const findAlreadyExistingUserQuery = 
+  `
+    SELECT email FROM users
+    WHERE email = $1
+    LIMIT 1
+  `
 
 export const deleteUserQuery =
   `
     DELETE FROM users
     WHERE id = $1
+    RETURNING *
   `
 export const modifiUsersQuery = 
 `

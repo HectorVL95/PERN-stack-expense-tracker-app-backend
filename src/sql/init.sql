@@ -8,7 +8,7 @@ CREATE TABLE users (
 
 CREATE TABLE data_ranges (
   id SERIAL PRIMARY KEY,
-  user_id INTEGER REFERENCES users(id) ON DELETE CASCADE
+  user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
   from_date DATE NOT NULL,
   to_date DATE NOT NULL,
   budget NUMERIC,

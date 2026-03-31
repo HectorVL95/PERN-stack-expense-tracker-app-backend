@@ -8,7 +8,7 @@ userRoutes
   .post('/user', createUser)
   .post('/user/login', loginUser)
   .get('/user', authenticatedToken, getLoggedUser)
-  .delete(`/user/:id`, authenticatedToken, deleteUser)
+  .delete(`/user/`, authenticatedToken, deleteUser)
   .put(`/user/:id`, authenticatedToken, modifyUser)
 
 export default userRoutes;

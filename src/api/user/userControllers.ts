@@ -2,15 +2,31 @@ import { asyncHandler } from '../../utils/asyncHandler';
 import { errorResponse } from '../../utils/errorResponse';
 import pool from '../../config/db';
 import { hash, compare } from 'bcrypt'
-import { createUserQuery, deleteUserQuery, loginUserQuery, findUserByIdQuery, modifiUsersQuery } from './userQuieres';
+import { 
+  createUserQuery,
+  deleteUserQuery, loginUserQuery, 
+  findUserByIdQuery, 
+  findAlreadyExistingUserQuery,
+  modifiUsersQuery 
+} from './userQueries';
 import jwt from 'jsonwebtoken'
 import { authenticatedRequest } from '../../utils/specialRequests';
 import { aunthenticatedUser } from '../../utils/specialRequests';
 
-export const createUser  = asyncHandler(async(req, res) => {
+export const createUser  = asyncHandler(async(req, res, next) => {
   const { name, email, password, budget } = req.body
-  const hashedPassword = await hash(password, 10)
 
+  const existingUser = await pool.query(
+    findAlreadyExistingUserQuery,
+    [email]
+  )
+
+  if (existingUser.rows[0]) {
+    return next(new errorResponse('The user already exists', 400))
+  }
+
+  const hashedPassword = await hash(password, 10)
+  
   const newUser = await pool.query(
     createUserQuery,
     [name, email, hashedPassword, budget]
@@ -82,7 +98,7 @@ export const deleteUser = asyncHandler(async(req, res, next) => {
     [userId]
   )
 
-  if (!deleteUser.rows[0]) return next(new errorResponse('User does not exist', 404))
+  if (deleteUser.rowCount === 0) return next(new errorResponse('User does not exist', 404))
 
     res.status(200).json({
       success: true,
