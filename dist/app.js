@@ -8,10 +8,13 @@ dotenv_1.default.config();
 const express_1 = __importDefault(require("express"));
 const testdb_1 = __importDefault(require("./utils/testdb"));
 const userRoutes_1 = __importDefault(require("./api/user/userRoutes"));
+const dateRangeRoutes_1 = __importDefault(require("./api/date-range/dateRangeRoutes"));
 const app = (0, express_1.default)();
 (0, testdb_1.default)();
 app.use(express_1.default.json());
-app.use(`/api`, userRoutes_1.default);
+app.use(express_1.default.urlencoded({ extended: true }));
+app.use('/api', userRoutes_1.default);
+app.use('/api', dateRangeRoutes_1.default);
 app.listen(process.env.PORT, () => {
     console.log(`listening to port ${process.env.PORT}`);
 });

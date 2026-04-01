@@ -2,9 +2,9 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.errorResponse = void 0;
 class errorResponse extends Error {
-    constructor(message, status_code) {
+    constructor(message, statusCode) {
         super(message);
-        this.status_code = status_code;
+        this.statusCode = statusCode;
         Error.captureStackTrace(this, this.constructor);
     }
 }

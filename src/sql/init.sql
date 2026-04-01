@@ -6,7 +6,7 @@ CREATE TABLE users (
   budget NUMERIC
 );
 
-CREATE TABLE data_ranges (
+CREATE TABLE date_ranges (
   id SERIAL PRIMARY KEY,
   user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
   from_date DATE NOT NULL,
@@ -17,7 +17,7 @@ CREATE TABLE data_ranges (
 
 CREATE TABLE expenses (
   id SERIAL PRIMARY KEY,
-  data_range_id INTEGER REFERENCES data_rang(id) ON DELETE CASCADE,
+  date_range_id INTEGER REFERENCES date_range(id) ON DELETE CASCADE,
   name TEXT,
   amount NUMERIC,
   location TEXT,

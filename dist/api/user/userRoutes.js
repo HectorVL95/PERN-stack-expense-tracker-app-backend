@@ -7,7 +7,7 @@ const userRoutes = (0, express_1.Router)();
 userRoutes
     .post('/user', userControllers_1.createUser)
     .post('/user/login', userControllers_1.loginUser)
-    .get(`/user/:id`, authenticatedToken_1.authenticatedToken, userControllers_1.getLoggedUser)
-    .delete(`/user/:id`, authenticatedToken_1.authenticatedToken, userControllers_1.deleteUser)
+    .get('/user', authenticatedToken_1.authenticatedToken, userControllers_1.getLoggedUser)
+    .delete(`/user/`, authenticatedToken_1.authenticatedToken, userControllers_1.deleteUser)
     .put(`/user/:id`, authenticatedToken_1.authenticatedToken, userControllers_1.modifyUser);
 exports.default = userRoutes;
