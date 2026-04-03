@@ -1,22 +1,29 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.fetchExpensesQuery = exports.deleteExpenseQuery = exports.editExpenseQuery = exports.createExpenseQuery = void 0;
+exports.fetchExpenseQueryInfo = exports.fetchExpensesQuery = exports.deleteExpenseQuery = exports.editExpenseQuery = exports.createExpenseQuery = void 0;
 exports.createExpenseQuery = `
-    INSERT INTO expenses ( name, amount, location, image)
-    VALUES ($1, $2, $3, 4, 5)
-    RETURNING *
+    INSERT INTO expenses (date_range_id, name, amount, location, image, date_created, hour_created)
+    VALUES ($1, $2, $3, $4, $5, NOW()::DATE, NOW()::TIME)
   `;
 exports.editExpenseQuery = `
-    UPDATE FROM expenses 
-    set name = $1, amount = $2, location = $3, image= $4
+    UPDATE expenses 
+    set name = COALESCE($2, name), 
+    amount = COALESCE($3, amount), 
+    location = COALESCE($4, location), 
+    image = COALESCE($5, image)
+    WHERE id =  $1
     RETURNING *
   `;
 exports.deleteExpenseQuery = `
-    DELETE * FROM expenses
-    WHERE id = $1
+    DELETE FROM expenses
+    WHERE id = $1 AND date_range_id = $2
     RETURNING *
   `;
 exports.fetchExpensesQuery = `
     SELECT * FROM expenses
     WHERE date_range_id = $1
+  `;
+exports.fetchExpenseQueryInfo = `
+    SELECT name, amount, location, image, date_created, hour_created FROM expenses
+    WHERE id = $1
   `;

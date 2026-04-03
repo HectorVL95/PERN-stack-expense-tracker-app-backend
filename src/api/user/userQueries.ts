@@ -18,6 +18,7 @@ export const findUserByIdQuery =
     SELECT id, name FROM users 
     WHERE id = $1
   `
+  
 export const findAlreadyExistingUserQuery = 
   `
     SELECT email FROM users
@@ -31,9 +32,10 @@ export const deleteUserQuery =
     WHERE id = $1
     RETURNING *
   `
+
 export const modifiUsersQuery = 
 `
-  UPDATE users SET email = $1 
+  UPDATE users SET name = $1 
   WHERE id = $2
   RETURNING id, name
 

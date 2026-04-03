@@ -27,7 +27,7 @@ exports.deleteUserQuery = `
     RETURNING *
   `;
 exports.modifiUsersQuery = `
-  UPDATE users SET email = $1 
+  UPDATE users SET name = $1 
   WHERE id = $2
   RETURNING id, name
 

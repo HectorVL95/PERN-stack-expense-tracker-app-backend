@@ -67,7 +67,7 @@ exports.deleteUser = (0, asyncHandler_1.asyncHandler)(async (req, res, next) => 
     });
 });
 exports.modifyUser = (0, asyncHandler_1.asyncHandler)(async (req, res, next) => {
-    const { userId } = req.body;
+    const { userId } = req.user;
     const { name } = req.body;
     const result = await db_1.default.query(userQueries_1.modifiUsersQuery, [name, userId]);
     if (result.rowCount === 0)

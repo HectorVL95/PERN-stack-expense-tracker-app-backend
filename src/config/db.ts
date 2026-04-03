@@ -8,8 +8,7 @@ const pool = new Pool({
   host: process.env.DB_HOST,
   database: process.env.DB_NAME,
   password: process.env.PGPASSWORD,
-  port: parseInt(process.env.DB_PORT || 5432),
-  // Add this block below:
+  port: parseInt(process.env.DB_PORT || "5432"),
   ssl: {
     rejectUnauthorized: false 
   }

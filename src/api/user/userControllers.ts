@@ -108,7 +108,7 @@ export const deleteUser = asyncHandler(async(req, res, next) => {
 })
 
 export const modifyUser = asyncHandler(async(req, res, next) => {
-  const { userId } = (req  as authenticatedRequest).body
+  const { userId } = (req  as authenticatedRequest).user!
   const { name  } = req.body
 
   const result = await pool.query(modifiUsersQuery, [name, userId])

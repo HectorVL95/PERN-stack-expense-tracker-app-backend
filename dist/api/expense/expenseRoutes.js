@@ -6,8 +6,9 @@ const authenticatedToken_1 = require("../../middleware/authenticatedToken");
 const expenseRoutes = (0, express_1.Router)();
 expenseRoutes.use(authenticatedToken_1.authenticatedToken);
 expenseRoutes
-    .post('/expense', expenseControllers_1.createExpense)
-    .put('/expense', expenseControllers_1.editExpense)
-    .delete('/expense', expenseControllers_1.deleteExpense)
-    .get('expense', expenseControllers_1.fetchExpenses);
+    .post('/expense/:date_range_id', expenseControllers_1.createExpense)
+    .put('/expense/:id', expenseControllers_1.editExpense)
+    .delete('/expense/:id', expenseControllers_1.deleteExpense)
+    .get('/expense/:date_range_id', expenseControllers_1.fetchExpenses)
+    .get('/expense/single/:id', expenseControllers_1.fetchExpenseInfo);
 exports.default = expenseRoutes;
