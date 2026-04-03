@@ -1,22 +1,23 @@
 CREATE TABLE users (
-  id SERIAL PRIMARY KEY,
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   name TEXT NOT NULL,
-  nmail TEXT UNIQUE NOT NULL,
+  email TEXT UNIQUE NOT NULL,
   password TEXT,
-  budget NUMERIC,
-  date_budget DATE
+  budget NUMERIC
 );
 
-CREATE TABLE data_ranges (
-  id SERIAL PRIMARY KEY,
+CREATE TABLE date_ranges (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES users(id) ON DELETE CASCADE,
   from_date DATE NOT NULL,
   to_date DATE NOT NULL,
   budget NUMERIC,
   total_expenses NUMERIC
-);
+)
 
-CREATE TABLE Expenses (
-  id SERIAL PRIMARY KEY,
+CREATE TABLE expenses (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  date_range_id UUID REFERENCES date_ranges(id) ON DELETE CASCADE,
   name TEXT,
   amount NUMERIC,
   location TEXT,
