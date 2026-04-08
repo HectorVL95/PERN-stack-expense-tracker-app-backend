@@ -15,7 +15,7 @@ export const loginUserQuery =
 
 export const findUserByIdQuery = 
   `
-    SELECT id, name FROM users 
+    SELECT id, name, budget FROM users
     WHERE id = $1
   `
   
