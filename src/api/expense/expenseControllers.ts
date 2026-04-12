@@ -5,8 +5,12 @@ import { createExpenseQuery, editExpenseQuery, deleteExpenseQuery, fetchExpenses
 
 export const createExpense = asyncHandler(async(req, res, next) => {
   const { date_range_id } = req.params
-  const { name, amount, location, image } = req.body
+  const { name, amount, location } = req.body
+   const image = req.file as Express.Multer.File
+  
   const created = await pool.query(createExpenseQuery, [date_range_id ,name, amount, location, image])
+
+ 
 
   if (created.rowCount === 0) {
     return next(new errorResponse('Expense not created', 400))
