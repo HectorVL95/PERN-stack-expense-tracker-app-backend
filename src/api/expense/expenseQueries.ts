@@ -2,6 +2,7 @@ export const createExpenseQuery =
   `
     INSERT INTO expenses (date_range_id, name, amount, location, image, date_created, hour_created)
     VALUES ($1, $2, $3, $4, $5, NOW()::DATE, NOW()::TIME)
+    RETURNING *
   `
 
 export const editExpenseQuery =
@@ -32,4 +33,12 @@ export const fetchExpenseQueryInfo =
   `
     SELECT name, amount, location, image, date_created, hour_created FROM expenses
     WHERE id = $1
+  `
+
+export const updateImage =
+  `
+    UPDATE expenses
+    set image = COALESCE($1, image)
+    WHERE id = $2
+    returning *
   `

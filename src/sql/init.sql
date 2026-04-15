@@ -21,7 +21,7 @@ CREATE TABLE expenses (
   name TEXT,
   amount NUMERIC,
   location TEXT,
-  image Text,
+  image TEXT,
   date_created DATE NOT NULL,
   hour_created TIME NOT NULL
 );
