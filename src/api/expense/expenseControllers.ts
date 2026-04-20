@@ -24,6 +24,8 @@ export const createExpense = asyncHandler(async(req, res, next) => {
         updateImage, [imageUrl, expense.id]
       )
 
+      console.log(imageUrl)
+
       expense.image = imageUrl
     } catch (error) {
       console.log('Unable to upload picture:', error)
