@@ -1,15 +1,35 @@
 import pool from '../../config/db';
 import { asyncHandler } from '../../utils/asyncHandler';
 import { errorResponse } from '../../utils/errorResponse';
-import { createExpenseQuery, editExpenseQuery, deleteExpenseQuery, fetchExpensesQuery,fetchExpenseQueryInfo } from './expenseQueries';
+import { createExpenseQuery, editExpenseQuery, deleteExpenseQuery, fetchExpensesQuery,fetchExpenseQueryInfo, updateImage } from './expenseQueries';
+import { uploadToCloudinary } from '../../utils/uploadToCloudinary';
 
 export const createExpense = asyncHandler(async(req, res, next) => {
   const { date_range_id } = req.params
-  const { name, amount, location, image } = req.body
-  const created = await pool.query(createExpenseQuery, [date_range_id ,name, amount, location, image])
+  const { name, amount, location } = req.body
+  const image = req.file
+  
+  const created = await pool.query(createExpenseQuery, [date_range_id , name, amount, location, null])
 
   if (created.rowCount === 0) {
     return next(new errorResponse('Expense not created', 400))
+  }
+
+  const expense = created.rows[0]
+
+  if (image) {
+    try {
+      const imageUrl = await uploadToCloudinary(image, `expenseImage/${expense.id}`)
+      await pool.query(
+        updateImage, [imageUrl, expense.id]
+      )
+
+      console.log(imageUrl)
+
+      expense.image = imageUrl
+    } catch (error) {
+      console.log('Unable to upload picture:', error)
+    }
   }
 
   res.status(200).json({
@@ -29,7 +49,22 @@ export const editExpense = asyncHandler(async(req, res, next) => {
     return next(new errorResponse('Expense info does not exist', 404))
   }
 
-  const edited = await pool.query(editExpenseQuery, [id, name, amount, location, image])
+  const edited = await pool.query(editExpenseQuery, [id, name, amount, location, null])
+
+  const expense = edited.rows[0]
+
+  if (image) {
+    try {
+      const imageUrl = await uploadToCloudinary(image, `expenseImage/${expense.id}`) 
+      await pool.query(
+        updateImage, [expense.id, imageUrl]
+      )
+
+      expense.image = imageUrl
+    } catch (error) {
+      console.log('Unable to upload picture:', error)
+    }
+  }
   
   if (edited.rowCount === 0) {
     return next(new errorResponse('Expense to edit not found', 404))
