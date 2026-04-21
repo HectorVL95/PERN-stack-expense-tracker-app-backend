@@ -31,11 +31,14 @@ export const createUser  = asyncHandler(async(req, res, next) => {
     createUserQuery,
     [name, email, hashedPassword, budget]
   )
+  
+  const token = jwt.sign({userId: newUser.rows[0].id, email: email} ,process.env.JWT_SECRET!, {expiresIn: '99999h', algorithm: 'HS256'})
 
-  res.status(201).json({
+   res.status(201).json({
     success: true,
     message: 'Created new user',
-    data: newUser.rows[0]
+    data: newUser.rows[0],
+    token
   })
 })
 
